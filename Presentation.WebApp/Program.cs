@@ -1,6 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using Presentation.WebApp.Data;
+using Presentation.WebApp.Identity;
+using Presentation.WebApp.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
+builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -33,6 +42,17 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+
+    await context.Database.MigrateAsync();
+
+    if (!await context.Users.AnyAsync())
+        await userService.CreateUserAsync("admin@domain.com", "BytMig123!");
+}
 
 
 app.Run();

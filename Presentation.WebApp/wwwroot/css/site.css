@@ -305,6 +305,10 @@ form {
         margin-bottom: 1.5rem;
     }
 
+    .form-checkbox-group {
+        display: flex;
+    }
+
     .form-label {
         color: var(--heading-color);
         font-weight: 600;
@@ -324,6 +328,11 @@ form {
             font-size: 1rem;
             opacity: 0.3;
         }
+    }
+
+    .form-checkbox {
+        height: 15px;
+        width: 15px;
     }
 
     .form-errormessage {
@@ -676,7 +685,7 @@ form {
 /* auth section */
 .section__auth {
     background-color: var(--section-background-color);
-    padding: 4rem 4rem 2rem;
+    padding: 3rem 4rem 2rem;
     border-radius: 20px;
     max-width: 750px;
 

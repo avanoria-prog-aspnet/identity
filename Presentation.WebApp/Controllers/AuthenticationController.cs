@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.WebApp.Identity;
 using Presentation.WebApp.Models.Authentication;
 using System.Security.Claims;
 
 namespace Presentation.WebApp.Controllers;
 
-public class AuthenticationController : Controller
+public class AuthenticationController(IUserService userService) : Controller
 {
     [HttpGet]
     public IActionResult SignIn(string? returnUrl = null)
@@ -20,23 +21,26 @@ public class AuthenticationController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SignIn(SignInForm form, string? returnUrl = null)
     {
-        const string secretPassword = "BytMig123!";
         ViewBag.ReturnUrl = returnUrl;
 
         if (!ModelState.IsValid)
         {
+            ModelState.AddModelError(nameof(form.ErrorMessage), "Incorrect email address or password");
             return View(form);
         }
 
-        if (form.Password != secretPassword)
+        var user = await userService.ValidateCredentialsAsync(form.Email, form.Password);
+        if (user is null)
         {
-            ModelState.AddModelError(nameof(form.ErrorMessage), "Incorrect password");
+            ModelState.AddModelError(nameof(form.ErrorMessage), "Incorrect email address or password");
             return View(form);
         }
 
-        var claims = new List<Claim>() 
-        { 
-            new (ClaimTypes.Name, "hans.mattin-lassei")
+        var claims = new List<Claim>()
+        {             
+            new (ClaimTypes.NameIdentifier, user.Id),
+            new (ClaimTypes.Name, user.Email),
+            new (ClaimTypes.Email, user.Email),
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -45,7 +49,7 @@ public class AuthenticationController : Controller
 
         var authProperties = new AuthenticationProperties
         {
-            IsPersistent = true,
+            IsPersistent = form.RememberMe,
             ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1),
         };
 
