@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.WebApp.Identity;
 using Presentation.WebApp.Models.Authentication;
 
 
 namespace Presentation.WebApp.Controllers;
 
-public class AuthenticationController() : Controller
+public class AuthenticationController(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager
+    ) : Controller
 {
     [HttpGet]
     public IActionResult SignIn(string? returnUrl = null)
@@ -27,13 +32,34 @@ public class AuthenticationController() : Controller
             return View(form);
         }
 
-
-        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+        var user = await userManager.FindByEmailAsync(form.Email);
+        if (user is null)
         {
-            return Redirect(returnUrl);
+            ModelState.AddModelError(nameof(form.ErrorMessage), "Incorrect email address or password");
+            return View(form);
         }
 
-        return RedirectToAction("Index", "Account");
+        var result = await signInManager.PasswordSignInAsync(form.Email, form.Password, form.RememberMe, true);
+
+        if (result.Succeeded)
+        {
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+            return RedirectToAction("Index", "Account");
+        }
+
+        if (result.IsLockedOut)
+        {
+            ModelState.AddModelError(nameof(form.ErrorMessage), "User account has been temporary locked");
+            return View(form);
+        }
+
+        ModelState.AddModelError(nameof(form.ErrorMessage), "Incorrect email address or password");
+        return View(form);
+
     }
 
     [HttpPost]
