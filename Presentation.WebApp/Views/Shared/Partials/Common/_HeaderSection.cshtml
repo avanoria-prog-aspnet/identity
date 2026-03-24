@@ -23,9 +23,21 @@
     </nav>
     <nav class="account-menu">
         <ul class="menu">
-            <li class="menu-item">
-                <a class="menu-item-link" asp-action="SignUp" asp-controller="Authentication">Become Member</a>
-            </li>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <li class="menu-item">
+                    <form method="post" asp-action="SignOut" asp-controller="Authentication" novalidate>
+                        <button class="menu-item-link" type="submit">Sign Out</button>
+                    </form>
+                </li>
+
+
+            }
+            else
+            {
+
+            }
+
             <li class="menu-item">
                 <a class="btn accent" asp-action="Index" asp-controller="Account">My Account</a>
             </li>

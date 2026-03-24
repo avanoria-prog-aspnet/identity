@@ -72,8 +72,7 @@ a {
 }
 
 .btn,
-.mobile-btn,
-button {
+.mobile-btn {
     display: inline-block;
     background-color: var(--button-background-color);
     border: 1px solid var(--button-border-color);
@@ -227,6 +226,10 @@ button {
 
         .menu-item-link {
             color: var(--menu-item-link-color);
+            background-color: transparent;
+            border: none;
+            outline: none;
+            font-size: 1em;
             text-decoration: none;
             font-weight: 600;
 
@@ -249,6 +252,20 @@ button {
     grid-template-rows: auto 1fr auto;
     height: 100dvh;
     padding: 1rem;
+}
+
+.auth-layout {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100dvh;
+    padding: 1rem;
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
 }
 
 /* global sections */
@@ -276,6 +293,52 @@ footer {
     margin: 3rem 0;
 }
 
+.auth-area {
+    display: grid;
+}
+
+/* form */
+form {
+    .form-group {
+        display: grid;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        color: var(--heading-color);
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .form-input {
+        padding: 1rem;
+        border-radius: 10px;
+        outline: none;
+        background-color: var(--form-input-background-color);
+        border: 1px solid var(--form-input-border-color);
+        color: var(--form-input-text-color);
+        font-size: 1rem;
+
+        &::placeholder {
+            font-size: 1rem;
+            opacity: 0.3;
+        }
+    }
+
+    .form-errormessage {
+        color: var(--danger-color);
+    }
+
+    .field-validation {
+        height: 25px;
+    }
+
+    .field-validation-error {
+        color: var(--danger-color);
+
+    }
+}
 
 /* header section */ 
 .section__header {
@@ -607,5 +670,28 @@ footer {
                 display: inline;
             }
         }
+    }
+}
+
+/* auth section */
+.section__auth {
+    background-color: var(--section-background-color);
+    padding: 4rem 4rem 2rem;
+    border-radius: 20px;
+    max-width: 750px;
+
+    hr {
+        opacity: 0.1;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .form-errormessage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
     }
 }

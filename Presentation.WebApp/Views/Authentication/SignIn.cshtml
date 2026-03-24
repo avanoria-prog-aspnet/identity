@@ -1,0 +1,43 @@
+﻿@using Presentation.WebApp.Models.Authentication
+@model SignInForm
+
+@{
+    Layout = "Layouts/_AuthLayout";
+    ViewData["Title"] = "Sign In";
+}
+
+<div class="page__auth-signin">
+
+    <section class="section__auth">
+        <div class="title">
+            <h1>Welcome Back!</h1>
+            <p>Log in to continue your fitness journey with full access to your customized program, training history, and progress tracking. Stay consistent, monitor your development, and keep moving forward with the structure and support built into your account.</p>
+        </div>
+        
+        <hr />
+
+        <form method="post" asp-action="SignIn" asp-controller="Authentication" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label class="form-label" asp-for="Password"></label>
+                <input class="form-input" asp-for="Password" />
+                <span class="field-validation" asp-validation-for="Password"></span>
+            </div>
+
+            <button class="btn" type="submit">Continue</button>
+        
+            <div class="form-errormessage">
+                <span class="field-validation-error" asp-validation-for="ErrorMessage"></span>
+            </div>
+
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+        </form>
+
+    </section>
+
+
+
+</div>

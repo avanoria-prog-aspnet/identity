@@ -40,6 +40,10 @@
     --button-accent-border-hover-color: var(--white-color);
     --button-accent-text-hover-color: var(--dark-color);
 
+    --form-input-background-color: var(--light-color);
+    --form-input-border-color: var(--light-color);
+    --form-input-text-color: var(--dark-color);
+
     --header-background-color: var(--dark-color);
     --header-text-color: var(--white-color);
 
